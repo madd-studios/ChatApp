@@ -30,6 +30,11 @@ const httpServer = createServer((req, res) => {
             path += 'client.js';
             res.statusCode = 200;
             break;
+        case '/new_styles.css':
+            res.setHeader('Content-Type', 'text/css');
+            path = 'new_styles.css'
+            res.statusCode = 200;
+            break;
         default:
             path += '404.html';
             res.statusCode = 404;

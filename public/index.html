@@ -17,29 +17,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="../styles.css" />
+		<link rel="stylesheet" href="new_styles.css" />
     <script src="index.js"></script>
 		<title>ChatCord App</title>
 	</head>
 	<body>
-        <div class="login-container">
-          <header>
-            <div class="login-header">
-                <h1>Chat App</h1>
-            </div>
-          </header>
-          <main>
-            <div class="login-main">
-              <label for="username">Username</label>
-              <input type="text" id="username" name="username" />
-              <label for="password">Password</label>
-              <input type="text" id="password" name="password" />
-              <div class="button">Sign In</div>
-              <span id="error-message">
-                Please provide a username
-              </span>
-            </div>
-          </main>
+        <div class="top-section">
+          <div class="login-container">
+            <div class="login-header"><span>Chat App</span></div>
+            <div class="login-body">
+              <div class="username-container">
+                <label for="username">Username: </label>
+                <input id="username" type="text">
+              </div>
+              <div class="password-container">
+                <label for="password">Password: </label>
+                <input id="password" type="text">
+              </div>
+              <!-- THIS SIGN-IN CONTAINER BREAKS IT FOR SOME REASON, BUT YOU DON'T NEED IT, USE THE BOTTOM SECTION FOR THE BUTTON -->
+              <div class="sign-in-container"></div>
+              </div>
+          </div>
+        </div>
+        <div class="bottom-section">
         </div>
 	</body>
 </html>

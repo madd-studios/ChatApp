@@ -1,0 +1,95 @@
+:root {
+    --dark-sea-green: #80BA9D;
+    --eton-blue: #9BD1A7;
+    --light-moss-green: #BEE0B4;
+    --calamansi: #FFF7AB;
+    --light-salmon-pink: #FF9C9F;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background: var(--light-moss-green);
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+.login-container {
+    width: 25%;
+    height: 70%;
+    /* background-color: #FFF7AB; */
+}
+
+.login-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+    width: 100%;
+    background-color: var(--light-salmon-pink);
+    border-top-left-radius: 100px;
+    border-top-right-radius: 100px;
+}
+
+.login-header span {
+    font-size: 3em;
+    font-family: 'Ooh Baby', cursive;
+}
+
+.login-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    height: 80%;
+    width: 100%;
+    background-color: var(--calamansi);
+    border-bottom-left-radius: 100px;
+    border-bottom-right-radius: 100px;
+}
+
+.username-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 50%;
+}
+
+.password-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 50%;
+}
+
+.sign-in-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 20%;
+}
+
+.top-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 75%;
+}
+
+.bottom-section {
+    width: 100%;
+    height: 40%;
+}
