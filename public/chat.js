@@ -2,6 +2,8 @@ window.onload = () => {
 
     const clientSocket = io();
 
+    // Gathered elements
+
     const chatWindow = document.getElementsByClassName("chat-window")[0];
 
     clientSocket.on("connect", (socket) => {

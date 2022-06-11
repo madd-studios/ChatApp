@@ -234,3 +234,14 @@ body {
     color: gray;
     margin-bottom: 2px;
   }
+
+  #error-message {
+    display: none;
+    font-family: 'Roboto Condensed', sans-serif;
+    color: red;
+    font-weight: bold;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    user-select: none;
+  }
