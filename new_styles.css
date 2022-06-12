@@ -62,7 +62,16 @@ body {
     align-items: center;
     align-content: center;
     width: 100%;
+    height: 25%;
+    padding-left: 18%;
+}
+
+.username-container input {
+    width: 80%;
     height: 50%;
+    border-radius: 10px;
+    font-family: 'Ooh Baby', cursive;
+    font-size: 2em;
 }
 
 .password-container {
@@ -70,16 +79,29 @@ body {
     align-items: center;
     align-content: center;
     width: 100%;
+    height: 25%;
+    padding-left: 18%;
+}
+
+.password-container input {
+    width: 80%;
     height: 50%;
+    border-radius: 10px;
+    font-family: 'Ooh Baby', cursive;
+    font-size: 2em;
 }
 
 .sign-in-container {
     display: flex;
     align-items: center;
-    align-content: center;
+    justify-content: center;
     width: 100%;
-    height: 20%;
+    height: 50%;
 }
+
+/* .sign-in-container label input {
+    display: block;
+} */
 
 .top-section {
     display: flex;
@@ -90,6 +112,24 @@ body {
 }
 
 .bottom-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 40%;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60%;
+    height: 30%;
+    border-radius: 25px;
+    background-color: var(--light-salmon-pink);
+}
+
+.button span {
+    font-family: 'Ooh Baby', cursive;
+    font-size: 2em;
 }
