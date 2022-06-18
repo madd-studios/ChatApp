@@ -4,91 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../new_styles.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="chat.js"></script>
 </head>
 <body>
     <div class="chat-container">
-        <div class="window chat-window-header">
-          <div>Chat App</div>
-          <div class="leave-button">Leave Room</div>
+        <div class="left-side">
+          <div class="chat-window window">
+          </div>
+          <div class="message-bar">
+            <div class="message-box window">
+              <textarea class="text-box" placeholder="Type your message here..."></textarea>
+            </div>
+            <!-- <div class="send-button window"><span>Send</span></div> -->
+            <div class="send-button window">
+              <span>SEND</span>
+            </div>
+          </div>
         </div>
-        <div class="window chat-room-header">
-          <span class="text">JavaScript</span>
-        </div>
-        <div class="chat-window window">
-            <div class="message-container-sent">
-                <div class="message-sent">
-                  <span class="messager">
-                    Steven
-                  </span>
-                  <span>
-                    Hello World! Here is some text. I am testing out my css for my chat application. Hopefully this works.
-                  </span>
-                </div>
-              </div>
-              <div class="message-container-received">
-                <div class="message-received">
-                  <span class="messager">
-                    Julian
-                  </span>
-                  <span>
-                    Okay cool...
-                  </span>
-                </div>
-              </div>
-              <div class="message-container-sent">
-                <div class="message-sent">
-                  <span class="messager">
-                    Steven
-                  </span>
-                  <span>
-                    Hello World! Here is some text. I am testing out my css for my chat application. Hopefully this works.
-                  </span>
-                </div>
-              </div>
-              <div class="message-container-sent">
-                <div class="message-sent">
-                  <span class="messager">
-                    Steven
-                  </span>
-                  <span>
-                    Hello World! Here is some text. I am testing out my css for my chat application. Hopefully this works.
-                  </span>
-                </div>
-              </div>
-              <div class="message-container-received">
-                <div class="message-received">
-                  <span class="messager">
-                    Julian
-                  </span>
-                  <span>
-                    Okay cool...
-                  </span>
-                </div>
-              </div>
-              <div class="message-container-received">
-                <div class="message-received">
-                  <span class="messager">
-                    Tyler
-                  </span>
-                  <span>
-                    What's up?
-                  </span>
-                </div>
-              </div>
-        </div>
-        <div class="user-window window">
-            <span class="user-header"><em>Users</em></span>
+        <div class="right-side">
+          <div class="chat-room">
+          </div>
+          <div class="user-window window">
+            <!-- <span class="user-header"><em>Users</em></span>
             <span class="user">Steven</span>
             <span class="user">Julian</span>
-            <span class="user">Darius</span>
+            <span class="user">Darius</span> -->
+          </div>
         </div>
-        <div class="message-box window">
-            <input type="text">
-        </div>
-        <div class="send-button window"><span>Send</span></div>
     </div>
 </body>
 </html>
