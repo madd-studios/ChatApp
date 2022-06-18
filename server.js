@@ -38,6 +38,8 @@ const httpServer = createServer((req, res) => {
         default:
             path += '404.html';
             res.statusCode = 404;
+        // Resources
+
     }
     console.log(`PATH: ${path}`);
     // response

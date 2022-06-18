@@ -1,9 +1,18 @@
+/* font-family: 'Roboto Mono', monospace;
+font-family: 'VT323', monospace; */
+
 :root {
     --dark-sea-green: #80BA9D;
     --eton-blue: #9BD1A7;
     --light-moss-green: #BEE0B4;
     --calamansi: #FFF7AB;
     --light-salmon-pink: #FF9C9F;
+
+    --dark: #2B2D42;
+    --gray: #8D99AE;
+    --lightgray: #EDF2F4;
+    --lightred: #EF233C;
+    --darkred: #D90429;
 }
 
 /* LOGIN STYLES */
@@ -14,7 +23,7 @@ html {
 }
 
 body {
-    background: var(--light-moss-green);
+    background: var(--lightgray);
     height: 100%;
     width: 100%;
     margin: 0px;
@@ -29,8 +38,8 @@ body {
 }
 
 .login-container {
-    width: 25%;
-    height: 70%;
+    width: 18%;
+    height: 50%;
     /* background-color: #FFF7AB; */
 }
 
@@ -40,14 +49,14 @@ body {
     align-items: center;
     height: 20%;
     width: 100%;
-    background-color: var(--light-salmon-pink);
-    border-top-left-radius: 100px;
-    border-top-right-radius: 100px;
+    background-color: var(--dark);
+    color: var(--lightgray);
+    user-select: none;
 }
 
 .login-header span {
     font-size: 3em;
-    font-family: 'Ooh Baby', cursive;
+    font-family: 'VT323', monospace;
 }
 
 .login-body {
@@ -57,9 +66,7 @@ body {
     align-content: center;
     height: 80%;
     width: 100%;
-    background-color: var(--calamansi);
-    border-bottom-left-radius: 100px;
-    border-bottom-right-radius: 100px;
+    background-color: var(--gray);
 }
 
 .username-container {
@@ -67,16 +74,15 @@ body {
     align-items: center;
     align-content: center;
     width: 100%;
-    height: 25%;
+    height: 30%;
     padding-left: 18%;
 }
 
 .username-container input {
     width: 80%;
-    height: 50%;
-    border-radius: 10px;
-    font-family: 'Ooh Baby', cursive;
-    font-size: 2em;
+    height: 40%;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.2em;
 }
 
 .password-container {
@@ -84,16 +90,15 @@ body {
     align-items: center;
     align-content: center;
     width: 100%;
-    height: 25%;
+    height: 30%;
     padding-left: 18%;
 }
 
 .password-container input {
     width: 80%;
-    height: 50%;
-    border-radius: 10px;
-    font-family: 'Ooh Baby', cursive;
-    font-size: 2em;
+    height: 40%;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.2em;
 }
 
 .sign-in-container {
@@ -101,7 +106,7 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 50%;
+    height: 40%;
 }
 
 /* .sign-in-container label input {
@@ -128,15 +133,24 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 60%;
-    height: 30%;
-    border-radius: 25px;
-    background-color: var(--light-salmon-pink);
+    width: 40%;
+    height: 50%;
+    border-radius: 5px;
+    background-color: var(--darkred);
+    margin-bottom: 7%;
+    user-select: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--lightred);
 }
 
 .button span {
-    font-family: 'Ooh Baby', cursive;
-    font-size: 2em;
+    font-family: 'Roboto Mono', monospace;
+    color: var(--lightgray);
+    font-weight: bold;
+    font-size: 1.5em;
 }
 
 /* CHAT STYLES */
@@ -147,7 +161,7 @@ body {
     justify-content: center;
     width: 75%;
     height: 85%;
-    background-color: rgba(108, 105, 105, 0.3);
+    background-color: var(--gray);
 }
 
 .left-side {
@@ -155,10 +169,9 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 70%;
-    height: 90%;
+    width: 80%;
+    height: 97%;
     margin-right: 10px;
-    background-color: aqua;
 }
 
 .right-side {
@@ -166,15 +179,18 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: aquamarine;
-    width: 20%;
-    height: 90%;
+    width: 18%;
+    height: 97%;
 }
 
 .chat-window {
-    background-color:burlywood;
+    background-color:var(--dark);
     width: 100%;
     height: 86%;
+}
+
+.chat-window div:first-child {
+    margin-top: 1%;
 }
 
 .message-bar {
@@ -195,7 +211,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: red;
+    background-color: var(--lightred);
     width: 10%;
     height: 100%;
 }
@@ -208,13 +224,41 @@ body {
 }
 
 .chat-room {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
     width: 100%;
     height: 10%;
-    background-color: #FFF7AB;
+    background-color: rgba(43,45,66,0.5);
+    font-family: monospace;
 }
 
 .user-window {
     width: 100%;
     height: 90%;
-    background-color: coral;
+    background-color: rgba(43,45,66,0.3);
+}
+
+.message {
+    margin-bottom: 1%;
+    width: fit-content;
+    min-width: 10%;
+    max-width: 60%;
+    min-height: 2%;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 1.2em;
+}
+
+.sent-message {
+    background-color: aliceblue;
+    margin-left: auto;
+    margin-right: 1%;
+}
+
+.received-message {
+    background-color: var(--lightred);
+    margin-right: auto;
+    margin-left: 1%;
 }
