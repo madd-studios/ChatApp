@@ -2,7 +2,6 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 // const eiows = require("eiows");
 const fs = require('fs');
-
 const httpServer = createServer((req, res) => {
     
     res.setHeader('Content-Type', 'text/html');
@@ -30,9 +29,19 @@ const httpServer = createServer((req, res) => {
             path += 'client.js';
             res.statusCode = 200;
             break;
+        case '/chat.js':
+            res.setHeader('Content-Type', 'text/javascript')
+            path += 'chat.js';
+            res.statusCode = 200;
+            break;
         case '/new_styles.css':
             res.setHeader('Content-Type', 'text/css');
             path = 'new_styles.css'
+            res.statusCode = 200;
+            break;
+        case '/assets/paper-plane.png':
+            res.setHeader('Content-Type', 'image/png');
+            path += "assets/paper-plane.png";
             res.statusCode = 200;
             break;
         default:
@@ -60,11 +69,17 @@ const httpServer = createServer((req, res) => {
 
 const io = new Server(httpServer);
 
-// io.on("connection", (socket) => {
-//     console.log("Client successfully connected");
-// });
+io.on("connection", (socket) => {
+    console.log("Client successfully connected");
 
-httpServer.listen(5500, 'localhost', () => {
+    socket.on("chat message", (message) => {
+        console.log(`Message: ${message}`);
+        socket.broadcast.emit("received message", message);
+    });
+
+});
+
+httpServer.listen(5500, '0.0.0.0', () => {
     console.log("Listening on port 5500");
 });
 
