@@ -37,6 +37,11 @@ body {
 
 }
 
+.login-form {
+    width: 100%;
+    height: 60%;
+}
+
 .login-container {
     width: 18%;
     height: 50%;
@@ -74,8 +79,7 @@ body {
     align-items: center;
     align-content: center;
     width: 100%;
-    height: 30%;
-    padding-left: 18%;
+    height: 50%;
 }
 
 .username-container input {
@@ -83,6 +87,8 @@ body {
     height: 40%;
     font-family: 'Roboto Mono', monospace;
     font-size: 1.2em;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .password-container {
@@ -90,8 +96,7 @@ body {
     align-items: center;
     align-content: center;
     width: 100%;
-    height: 30%;
-    padding-left: 18%;
+    height: 50%;
 }
 
 .password-container input {
@@ -99,6 +104,8 @@ body {
     height: 40%;
     font-family: 'Roboto Mono', monospace;
     font-size: 1.2em;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 .sign-in-container {
