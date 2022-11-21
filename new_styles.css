@@ -44,7 +44,7 @@ body {
 
 .login-container {
     width: 18%;
-    height: 50%;
+    height: 70%;
     /* background-color: #FFF7AB; */
 }
 
@@ -69,7 +69,7 @@ body {
     flex-direction: column;
     align-items: center;
     align-content: center;
-    height: 80%;
+    height: 70%;
     width: 100%;
     background-color: var(--gray);
 }
@@ -108,12 +108,60 @@ body {
     margin-right: 10%;
 }
 
-.sign-in-container {
+.email-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 50%;
+}
+
+.email-container input {
+    width: 80%;
+    height: 40%;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.2em;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.button-container {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 40%;
+}
+
+/* Sign In Context */
+.sign-in-context {
+    margin-top: 2px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 10%;
+}
+
+.context {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 50%;
+    background-color: var(--gray);
+    font-family: 'Roboto Mono', monospace;
+    user-select: none;
+}
+
+.context span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.context.selected {
+    background-color: var(--dark);
+    color: white;
 }
 
 /* .sign-in-container label input {
@@ -275,4 +323,8 @@ body {
 .send-button img{
     max-height: 75%;
     max-width: 75%;
+}
+
+.hidden {
+    display: none;
 }

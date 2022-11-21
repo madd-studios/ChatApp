@@ -29,6 +29,11 @@ const httpServer = createServer((req, res) => {
             path += 'client.js';
             res.statusCode = 200;
             break;
+        case '/index.js':
+            res.setHeader('Content-Type', 'text/javascript')
+            path += 'index.js';
+            res.statusCode = 200;
+            break;
         case '/chat.js':
             res.setHeader('Content-Type', 'text/javascript')
             path += 'chat.js';
