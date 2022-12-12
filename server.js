@@ -8,52 +8,60 @@ const httpServer = createServer((req, res) => {
 
     // routing
     let path = './public/';
-    switch(req.url) {
-        case '/':
-            path += 'index.html';
-            res.statusCode = 200;
-            break;
-        case '/chat':
-            path += 'chat.html';
-            res.statusCode = 200;
-            break;
-        // CSS Files
-        case '/styles.css':
-            res.setHeader('Content-Type', 'text/css')
-            path = 'styles.css'
-            res.statusCode = 200;
-            break;
-        // JS Files
-        case '/client.js':
-            res.setHeader('Content-Type', 'text/javascript')
-            path += 'client.js';
-            res.statusCode = 200;
-            break;
-        case '/index.js':
-            res.setHeader('Content-Type', 'text/javascript')
-            path += 'index.js';
-            res.statusCode = 200;
-            break;
-        case '/chat.js':
-            res.setHeader('Content-Type', 'text/javascript')
-            path += 'chat.js';
-            res.statusCode = 200;
-            break;
-        case '/new_styles.css':
-            res.setHeader('Content-Type', 'text/css');
-            path = 'new_styles.css'
-            res.statusCode = 200;
-            break;
-        case '/assets/paper-plane.png':
-            res.setHeader('Content-Type', 'image/png');
-            path += "assets/paper-plane.png";
-            res.statusCode = 200;
-            break;
-        default:
-            path += '404.html';
-            res.statusCode = 404;
-        // Resources
 
+    if(req.method === 'GET') {
+        switch(req.url) {
+            case '/':
+                path += 'index.html';
+                res.statusCode = 200;
+                break;
+            case '/chat':
+                path += 'chat.html';
+                res.statusCode = 200;
+                break;
+            // CSS Files
+            case '/styles.css':
+                res.setHeader('Content-Type', 'text/css');
+                path = 'styles.css'
+                res.statusCode = 200;
+                break;
+            // JS Files
+            case '/client.js':
+                res.setHeader('Content-Type', 'text/javascript');
+                path += 'client.js';
+                res.statusCode = 200;
+                break;
+            case '/index.js':
+                res.setHeader('Content-Type', 'text/javascript');
+                path += 'index.js';
+                res.statusCode = 200;
+                break;
+            case '/chat.js':
+                res.setHeader('Content-Type', 'text/javascript');
+                path += 'chat.js';
+                res.statusCode = 200;
+                break;
+            case '/new_styles.css':
+                res.setHeader('Content-Type', 'text/css');
+                path = 'new_styles.css'
+                res.statusCode = 200;
+                break;
+            case '/assets/paper-plane.png':
+                res.setHeader('Content-Type', 'image/png');
+                path += "assets/paper-plane.png";
+                res.statusCode = 200;
+                break;
+            case '/favicon.ico':
+                res.setHeader('Content-Type', 'image/png');
+                path += "assets/chat.png";
+                res.statusCode = 200;
+                break;
+            default:
+                path += '404.html';
+                res.statusCode = 404;
+            // Resources
+            
+        }
     }
     console.log(`PATH: ${path}`);
     // response

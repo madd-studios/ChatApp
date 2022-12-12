@@ -2,21 +2,12 @@ const signInButton = document.getElementsByClassName("button")[0];
 const errorMessage = document.getElementById("error-message");
 const username = document.getElementById("username");
 
-// signInButton.onclick = (e) => {
-//     const input = username.value;
-//     const url = 'http://127.0.0.1:5500'
-
-//     if (input) {
-//         window.location = "chat.html";
-//     }
-//     else {
-//         errorMessage.style.display = "block";
-//     }
-// }
+// let current_context;
 
 function init() {
     // CODE
     console.log("Initializing...");
+    current_context = document.querySelector('.context.selected').value;
 }
 
 function updateContext(event) {
@@ -37,11 +28,29 @@ function updateContext(event) {
     if(value == "signin") {
         console.log("SIGNIN");
         // CODE
+        // You may need to change what you're targetting.
+        document.querySelector('.top-section-signin').classList.remove('hidden');
+        document.querySelector('.top-section-signup').classList.add('hidden');
+
+        let contexts = document.querySelectorAll('.context');
+        contexts.forEach(element => {
+            element.classList.remove("selected");
+        });
+        document.querySelector('.context[value="signin"]').classList.add('selected');
     }
 
     if(value == "signup") {
         console.log("SIGNUP");
         // CODE
+        // You may need to change what you're targetting.
+        document.querySelector('.top-section-signup').classList.remove('hidden');
+        document.querySelector('.top-section-signin').classList.add('hidden');
+
+        let contexts = document.querySelectorAll('.context');
+        contexts.forEach(element => {
+            element.classList.remove("selected");
+        });
+        document.querySelector('.context[value="signup"]').classList.add('selected');
     }
 
 }

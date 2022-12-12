@@ -48,7 +48,24 @@ body {
     /* background-color: #FFF7AB; */
 }
 
-.login-header {
+.signup-container {
+    width: 18%;
+    height: 90%;
+    /* background-color: #FFF7AB; */
+}
+
+/* .login-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20%;
+    width: 100%;
+    background-color: var(--dark);
+    color: var(--lightgray);
+    user-select: none;
+} */
+
+.header {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,12 +76,27 @@ body {
     user-select: none;
 }
 
-.login-header span {
+/* .login-header span {
+    font-size: 3em;
+    font-family: 'VT323', monospace;
+} */
+
+.header span {
     font-size: 3em;
     font-family: 'VT323', monospace;
 }
 
-.login-body {
+/* .login-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    height: 70%;
+    width: 100%;
+    background-color: var(--gray);
+} */
+
+.context-body {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -133,8 +165,19 @@ body {
     height: 40%;
 }
 
+/* Sign Up Context */
+
+
 /* Sign In Context */
-.sign-in-context {
+/* .sign-in-context {
+    margin-top: 2px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 10%;
+} */
+
+.context-buttons {
     margin-top: 2px;
     display: flex;
     flex-direction: row;
@@ -168,15 +211,43 @@ body {
     display: block;
 } */
 
-.top-section {
+.top-section-signin {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 75%;
 }
 
-.bottom-section {
+.top-section-signup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 75%;
+}
+
+/* .signup-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    height: 70%;
+    width: 100%;
+    background-color: var(--gray);
+} */
+
+.bottom-section-signin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40%;
+}
+
+.bottom-section-signup {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -327,4 +398,9 @@ body {
 
 .hidden {
     display: none;
+}
+
+.signup-form {
+    width: 100%;
+    height: 40%;
 }
