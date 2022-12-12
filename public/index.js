@@ -29,8 +29,8 @@ function updateContext(event) {
         console.log("SIGNIN");
         // CODE
         // You may need to change what you're targetting.
-        document.querySelector('.top-section-signin').classList.remove('hidden');
-        document.querySelector('.top-section-signup').classList.add('hidden');
+        document.querySelector('.login-container').classList.remove('hidden');
+        document.querySelector('.signup-container').classList.add('hidden');
 
         let contexts = document.querySelectorAll('.context');
         contexts.forEach(element => {
@@ -43,8 +43,8 @@ function updateContext(event) {
         console.log("SIGNUP");
         // CODE
         // You may need to change what you're targetting.
-        document.querySelector('.top-section-signup').classList.remove('hidden');
-        document.querySelector('.top-section-signin').classList.add('hidden');
+        document.querySelector('.signup-container').classList.remove('hidden');
+        document.querySelector('.login-container').classList.add('hidden');
 
         let contexts = document.querySelectorAll('.context');
         contexts.forEach(element => {

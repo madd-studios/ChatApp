@@ -50,7 +50,7 @@ body {
 
 .signup-container {
     width: 18%;
-    height: 90%;
+    height: 80%;
     /* background-color: #FFF7AB; */
 }
 
@@ -101,12 +101,20 @@ body {
     flex-direction: column;
     align-items: center;
     align-content: center;
-    height: 70%;
+    height: 80%;
     width: 100%;
     background-color: var(--gray);
 }
 
-.username-container {
+/* .username-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 50%;
+} */
+
+.two-containers {
     display: flex;
     align-items: center;
     align-content: center;
@@ -114,7 +122,24 @@ body {
     height: 50%;
 }
 
-.username-container input {
+.three-containers {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 33%;
+}
+
+/* .username-container input {
+    width: 80%;
+    height: 40%;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.2em;
+    margin-left: 10%;
+    margin-right: 10%;
+} */
+
+.inputs {
     width: 80%;
     height: 40%;
     font-family: 'Roboto Mono', monospace;
@@ -123,39 +148,30 @@ body {
     margin-right: 10%;
 }
 
-.password-container {
+/* .password-container {
     display: flex;
     align-items: center;
     align-content: center;
     width: 100%;
     height: 50%;
-}
+} */
 
-.password-container input {
+/* .password-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    height: 33%;
+} */
+
+/* .password-container input {
     width: 80%;
     height: 40%;
     font-family: 'Roboto Mono', monospace;
     font-size: 1.2em;
     margin-left: 10%;
     margin-right: 10%;
-}
-
-.email-container {
-    display: flex;
-    align-items: center;
-    align-content: center;
-    width: 100%;
-    height: 50%;
-}
-
-.email-container input {
-    width: 80%;
-    height: 40%;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 1.2em;
-    margin-left: 10%;
-    margin-right: 10%;
-}
+} */
 
 .button-container {
     display: flex;
@@ -181,8 +197,8 @@ body {
     margin-top: 2px;
     display: flex;
     flex-direction: row;
-    width: 100%;
-    height: 10%;
+    width: 18%;
+    height: 8%;
 }
 
 .context {
@@ -211,7 +227,7 @@ body {
     display: block;
 } */
 
-.top-section-signin {
+.top-section {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -220,14 +236,14 @@ body {
     height: 75%;
 }
 
-.top-section-signup {
+/* .top-section-signup {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 75%;
-}
+} */
 
 /* .signup-body {
     display: flex;
@@ -239,15 +255,7 @@ body {
     background-color: var(--gray);
 } */
 
-.bottom-section-signin {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 40%;
-}
-
-.bottom-section-signup {
+.bottom-section {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -402,5 +410,5 @@ body {
 
 .signup-form {
     width: 100%;
-    height: 40%;
+    height: 70%;
 }
