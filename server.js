@@ -19,6 +19,10 @@ const httpServer = createServer((req, res) => {
                 path += 'chat.html';
                 res.statusCode = 200;
                 break;
+            case '/dashboard':
+                path += 'dashboard.html';
+                res.statusCode = 200;
+                break;
             // CSS Files
             case '/styles.css':
                 res.setHeader('Content-Type', 'text/css');
