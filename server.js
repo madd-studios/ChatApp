@@ -29,6 +29,11 @@ const httpServer = createServer((req, res) => {
                 path = 'styles.css'
                 res.statusCode = 200;
                 break;
+            case '/dash_styles.css':
+                res.setHeader('Content-Type', 'text/css');
+                path = 'dash_styles.css'
+                res.statusCode = 200;
+                break;
             // JS Files
             case '/client.js':
                 res.setHeader('Content-Type', 'text/javascript');
@@ -56,10 +61,21 @@ const httpServer = createServer((req, res) => {
                 res.statusCode = 200;
                 break;
             case '/favicon.ico':
-                res.setHeader('Content-Type', 'image/png');
+                res.setHeader('Content-Type', 'image/svg+xml');
                 path += "assets/chat.png";
                 res.statusCode = 200;
                 break;
+            case '/assets/user-white.svg':
+                res.setHeader('Content-Type', 'image/svg+xml');
+                path += "assets/user-white.svg";
+                res.statusCode = 200;
+                break;
+            case '/assets/user-black.svg':
+                res.setHeader('Content-Type', 'image/svg+xml');
+                path += "assets/user-black.svg";
+                res.statusCode = 200;
+                break;
+
             default:
                 path += '404.html';
                 res.statusCode = 404;

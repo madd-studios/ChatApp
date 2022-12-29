@@ -1,0 +1,103 @@
+:root {
+    --dark-sea-green: #80BA9D;
+    --eton-blue: #9BD1A7;
+    --light-moss-green: #BEE0B4;
+    --calamansi: #FFF7AB;
+    --light-salmon-pink: #FF9C9F;
+
+    --dark: #2B2D42;
+    --gray: #8D99AE;
+    --lightgray: #EDF2F4;
+    --lightred: #EF233C;
+    --darkred: #D90429;
+}
+
+/* Dashboard Styles */
+/* .dash-body {
+    display: flex;
+    flex-direction: column;
+} */
+
+html {
+    /* height: 100%; */
+    width: 100%;
+}
+
+body {
+    background: var(--lightgray);
+    /* height: 100%; */
+    width: 100%;
+    margin: 0px;
+    /* overflow: hidden; */
+
+    /* display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center; */
+
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: sticky;
+    top: 0;
+    background-color: var(--gray);
+    width: 100vw;
+    max-width: 100%;
+    height: 5vh;
+}
+
+.box {
+    margin-left: auto;
+    margin-right: auto;
+    height: 700px;
+    width: 700px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: red;
+}
+
+/* .user-container {
+    width: 2vw;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 3vw;
+}
+
+.user-container::after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+} */
+
+.user-container {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 3vw;
+    width: 2vw;
+    max-width: 2vw;
+    height: auto;
+    aspect-ratio: 1/1;
+}
+
+.user-icon {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* .user-icon {
+    width: 3vw;
+    background-color: blue;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 3vw;
+}
+
+.user-icon::after {
+    content: "";
+    display: block;
+    padding-top: 100%;
+} */
