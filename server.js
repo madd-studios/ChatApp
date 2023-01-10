@@ -1,7 +1,30 @@
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const { db_client } = require('./utilities/configuration.js');
+
 // const eiows = require("eiows");
 const fs = require('fs');
+
+db_client.query('SELECT * FROM base.users', (err, res) => {
+    if(err) {
+        console.log(err.stack);
+    }
+    else {
+        console.log(res.rows);
+    }
+    db_client.end();
+});
+
+
+
+/*
+    ROUTING CONFIGURATION
+
+    SIDE NOTE: Maybe in the future you can have a way to pass the req.url to a series of functions
+    that have routes related to a certain grouping (maybe styles, js, html). This would be a clean way
+    to organize your routing.
+*/
+
 const httpServer = createServer((req, res) => {
     
     res.setHeader('Content-Type', 'text/html');
@@ -48,6 +71,11 @@ const httpServer = createServer((req, res) => {
             case '/chat.js':
                 res.setHeader('Content-Type', 'text/javascript');
                 path += 'chat.js';
+                res.statusCode = 200;
+                break;
+            case '/dashboard.js':
+                res.setHeader('Content-Type', 'text/javascript');
+                path += 'dashboard.js';
                 res.statusCode = 200;
                 break;
             case '/new_styles.css':

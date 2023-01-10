@@ -6,18 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="dash_styles.css" />
+    <script src="dashboard.js"></script>
+    <script>
+        window.onload = () => {
+          init();
+        }
+      </script>
 </head>
 <body>
     <!-- Need to figure out how to show that you are logged in
     and what to show if you access this page without logging in (maybe a redirect?)
     Figure out how to implement this logic -->
     <nav>
-        <div class="user-container">
+        <div class="user-container" onclick="toggleLoginDropdown();">
             <img class="user-icon" src="/assets/user-white.svg" alt="">
             <!-- <img class="user-icon hidden" src="/assets/user-black.svg" alt=""> -->
         </div>
     </nav>
-
+    <!-- <div style="position: fixed; background-color: blue; width: 100px; height: 100px; margin-left: auto; margin-right: 0;"></div> -->
+    <div class="login-dropdown hidden">
+        <div class="login-dropdown-option"><div>Dashboard</div></div>
+        <hr style="margin: 0;">
+        <div class="login-dropdown-option"><div>Settings</div></div>
+        <hr style="margin: 0;">
+        <div class="login-dropdown-option"><div>Logout</div></div>
+    </div>
     <div class="box"></div>
     <div class="box"></div>
     <div class="box"></div>
