@@ -1,19 +1,22 @@
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { db_client } = require('./utilities/configuration.js');
+const { token_secret, password_salt } = require('./utilities/security.js');
+const { css_routing, js_routing, image_routing } = require("./routing/resources.js");
+const { router } = require("./routing/main.js");
 
 // const eiows = require("eiows");
 const fs = require('fs');
 
-db_client.query('SELECT * FROM base.users', (err, res) => {
-    if(err) {
-        console.log(err.stack);
-    }
-    else {
-        console.log(res.rows);
-    }
-    db_client.end();
-});
+// db_client.query('SELECT * FROM base.users', (err, res) => {
+//     if(err) {
+//         console.log(err.stack);
+//     }
+//     else {
+//         console.log(res.rows);
+//     }
+//     db_client.end();
+// });
 
 
 
@@ -26,94 +29,55 @@ db_client.query('SELECT * FROM base.users', (err, res) => {
 */
 
 const httpServer = createServer((req, res) => {
-    
-    res.setHeader('Content-Type', 'text/html');
+
+    console.log(req.url);
 
     // routing
-    let path = './public/';
+    let root_path = './public/',
+        path,
+        file_type;
 
     if(req.method === 'GET') {
-        switch(req.url) {
-            case '/':
-                path += 'index.html';
-                res.statusCode = 200;
-                break;
-            case '/chat':
-                path += 'chat.html';
-                res.statusCode = 200;
-                break;
-            case '/dashboard':
-                path += 'dashboard.html';
-                res.statusCode = 200;
-                break;
-            // CSS Files
-            case '/styles.css':
-                res.setHeader('Content-Type', 'text/css');
-                path = 'styles.css'
-                res.statusCode = 200;
-                break;
-            case '/dash_styles.css':
-                res.setHeader('Content-Type', 'text/css');
-                path = 'dash_styles.css'
-                res.statusCode = 200;
-                break;
-            // JS Files
-            case '/client.js':
-                res.setHeader('Content-Type', 'text/javascript');
-                path += 'client.js';
-                res.statusCode = 200;
-                break;
-            case '/index.js':
-                res.setHeader('Content-Type', 'text/javascript');
-                path += 'index.js';
-                res.statusCode = 200;
-                break;
-            case '/chat.js':
-                res.setHeader('Content-Type', 'text/javascript');
-                path += 'chat.js';
-                res.statusCode = 200;
-                break;
-            case '/dashboard.js':
-                res.setHeader('Content-Type', 'text/javascript');
-                path += 'dashboard.js';
-                res.statusCode = 200;
-                break;
-            case '/new_styles.css':
-                res.setHeader('Content-Type', 'text/css');
-                path = 'new_styles.css'
-                res.statusCode = 200;
-                break;
-            case '/assets/paper-plane.png':
-                res.setHeader('Content-Type', 'image/png');
-                path += "assets/paper-plane.png";
-                res.statusCode = 200;
-                break;
-            case '/favicon.ico':
-                res.setHeader('Content-Type', 'image/svg+xml');
-                path += "assets/chat.png";
-                res.statusCode = 200;
-                break;
-            case '/assets/user-white.svg':
-                res.setHeader('Content-Type', 'image/svg+xml');
-                path += "assets/user-white.svg";
-                res.statusCode = 200;
-                break;
-            case '/assets/user-black.svg':
-                res.setHeader('Content-Type', 'image/svg+xml');
-                path += "assets/user-black.svg";
-                res.statusCode = 200;
-                break;
 
-            default:
-                path += '404.html';
-                res.statusCode = 404;
-            // Resources
-            
+        res.statusCode = 200;
+
+        if(req.url.indexOf(".") > -1) {
+
+            file_type = req.url.substring(req.url.indexOf(".")+1);
+
+            // console.log(file_type);
+
+            switch(file_type) {
+                
+                case "css":
+                    path = css_routing(res, req);
+                    break;
+                
+                case "js":
+                    path = js_routing(res, req);
+                    break;
+                
+                default:
+                    path = image_routing(res, req);
+
+                if(path == null) {
+                    res.statusCode = 404;
+                }
+
+            }
+
+        }
+        else {
+
+            path = router(res, req);
+
         }
     }
-    console.log(`PATH: ${path}`);
+
+    
+    // console.log(`PATH: ${path}`);
     // response
-    fs.readFile(path, (err, data) => {
+    fs.readFile(root_path + path, (err, data) => {
         if (err) {
             console.log("IN readFile");
             console.log(err.message);
@@ -124,7 +88,7 @@ const httpServer = createServer((req, res) => {
         }
     });
 
-    path = "";
+    // path = "";
 
 });
 
