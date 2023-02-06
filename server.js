@@ -3,22 +3,8 @@ const { Server } = require("socket.io");
 const { db_client } = require('./utilities/configuration.js');
 const { token_secret, password_salt } = require('./utilities/security.js');
 const { css_routing, js_routing, image_routing } = require("./routing/resources.js");
-const { router } = require("./routing/main.js");
-
-// const eiows = require("eiows");
+const { ui_router } = require("./routing/main.js");
 const fs = require('fs');
-
-// db_client.query('SELECT * FROM base.users', (err, res) => {
-//     if(err) {
-//         console.log(err.stack);
-//     }
-//     else {
-//         console.log(res.rows);
-//     }
-//     db_client.end();
-// });
-
-
 
 /*
     ROUTING CONFIGURATION
@@ -45,8 +31,6 @@ const httpServer = createServer((req, res) => {
 
             file_type = req.url.substring(req.url.indexOf(".")+1);
 
-            // console.log(file_type);
-
             switch(file_type) {
                 
                 case "css":
@@ -69,26 +53,35 @@ const httpServer = createServer((req, res) => {
         }
         else {
 
-            path = router(res, req);
+            path = ui_router(res, req);
 
         }
+
+        fs.readFile(root_path + path, (err, data) => {
+            if (err) {
+                console.log("IN readFile");
+                console.log(err.message);
+                res.end();
+            }
+            else {
+                res.end(data);
+            }
+        });
+
     }
 
-    
-    // console.log(`PATH: ${path}`);
-    // response
-    fs.readFile(root_path + path, (err, data) => {
-        if (err) {
-            console.log("IN readFile");
-            console.log(err.message);
-            res.end();
-        }
-        else {
-            res.end(data);
-        }
-    });
+    if(req.method === "POST") {
 
-    // path = "";
+        /* 
+            I'm guessing you use either a 201 code for
+            creating a user or a 202 code for accepting the login 
+            credentials
+        */
+        
+        security_router(res, req);
+        
+
+    }
 
 });
 
@@ -107,8 +100,6 @@ io.on("connection", (socket) => {
 httpServer.listen(5500, '0.0.0.0', () => {
     console.log("Listening on port 5500");
 });
-
-// httpServer.listen(5500);
 
 
 

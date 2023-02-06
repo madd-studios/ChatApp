@@ -5,7 +5,7 @@ let routes = {
     "404": "404.html"
 };
 
-function router(response, request) {
+function ui_router(response, request) {
 
     response.setHeader('Content-Type', 'text/html');
 
@@ -17,4 +17,8 @@ function router(response, request) {
     return `/templates/${routes["404"]}`;
 }
 
-exports.router = router;
+function non_ui_router(response, request) {
+    
+}
+
+exports.ui_router = ui_router;
