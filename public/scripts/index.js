@@ -15,6 +15,7 @@ const signInButton = document.getElementsByClassName("button")[0];
 const errorMessage = document.getElementById("error-message");
 const username = document.getElementById("username");
 let prev_state = "signin";
+let notFetching = true;
 
 // let current_context;
 
@@ -39,7 +40,8 @@ function updateContext(event) {
 
     let value = event.currentTarget.getAttribute("value");
 
-    if(value != prev_state) { errorDisplay(prev_state, {}, false) }
+    resetContext();
+    // if(value != prev_state) { errorDisplay(prev_state, {}, false) }
 
     if(value == "signin") {
         console.log("SIGNIN");
@@ -75,8 +77,6 @@ function updateContext(event) {
 
     }
 
-    wipeInputs();
-
 }
 
 function checkFields(event) {
@@ -84,6 +84,7 @@ function checkFields(event) {
     let btn_type = event.currentTarget.id,
         context,
         errors = {},
+        credentials = {},
         email,
         username,
         password,
@@ -109,6 +110,7 @@ function checkFields(event) {
         }
         else {
             errors.username = "";
+            credentials.username = username.value;
         }
 
         if(!password.value) {
@@ -117,6 +119,7 @@ function checkFields(event) {
         }
         else {
             errors.password = "";
+            credentials.password = password.value;
         }
 
     }
@@ -135,6 +138,7 @@ function checkFields(event) {
         }
         else {
             errors.username = "";
+            credentials.username = username.value;
         }
 
         if(!password.value) {
@@ -143,6 +147,7 @@ function checkFields(event) {
         }
         else {
             errors.password = "";
+            credentials.password = password.value;
         }
 
         if(!email.value) {
@@ -151,6 +156,7 @@ function checkFields(event) {
         }
         else {
             errors.email = "";
+            credentials.email = email.value;
         }
 
     }
@@ -163,6 +169,8 @@ function checkFields(event) {
 
     result.errors = errors;
     result.context = context;
+    result.no_errors = no_errors;
+    result.credentials = credentials;
 
     return result;
 
@@ -170,7 +178,11 @@ function checkFields(event) {
 
 function login(event) {
 
-    let errors, context, checkFieldsReturn, no_errors; 
+    console.log("LOGGING IN");
+
+    let errors, context, checkFieldsReturn, no_errors, credentials,
+    btn_type = event.currentTarget.id,
+    route = null; 
 
     checkFieldsReturn = checkFields(event);
 
@@ -180,17 +192,51 @@ function login(event) {
 
     no_errors = checkFieldsReturn.no_errors;
 
-    errorDisplay(context, errors, true);
+    credentials = checkFieldsReturn.credentials;
 
-    if(no_errors) {
+    if(!no_errors) {
+        errorDisplay(context, errors); 
+    }
+    // errorDisplay(context, errors, true);
+    console.log(`notFetching: ${notFetching}`);
+    console.log(`no_errors: ${no_errors}`);
+
+    if(no_errors && notFetching) {
 
         // FETCH REQUEST HERE
         // ALSO, MAYBE ERROR DISPLAY SHOULD BE RENAMED AND SHOULD GRAB THE CREDENTIALS...
+        console.log("ABOUT TO FETCH");
+
+        console.log(credentials);
+
+        notFetching = false;
+        if(btn_type == "signup-btn") {
+            route = '/signup';
+        }
+        if(btn_type == "signin-btn") {
+            route = '/signin';
+        }
+        fetch(`${route}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'applicatin/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(credentials)
+        }).then((response) => {
+            window.location.replace(
+                response.url
+              );
+            console.log(response);
+            // response.json().then(data => console.log(data));
+            // notFetching = true;
+        });
 
     }
 
 }
 
+// function errorDisplay(context, errors, show) {
 function errorDisplay(context, errors, show) {
 
     let email_error_cont,
@@ -202,8 +248,11 @@ function errorDisplay(context, errors, show) {
         username_error_cont = document.querySelector("#signin-username").parentElement.nextElementSibling;
         password_error_cont = document.querySelector("#signin-password").parentElement.nextElementSibling;
 
-        username_error_cont.innerText = show ? errors.username : "";
-        password_error_cont.innerText = show ? errors.password : "";
+        // username_error_cont.innerText = show ? errors.username : "";
+        // password_error_cont.innerText = show ? errors.password : "";
+
+        username_error_cont.innerText = errors.username;
+        password_error_cont.innerText = errors.password;
 
     }
 
@@ -213,21 +262,35 @@ function errorDisplay(context, errors, show) {
         email_error_cont = document.querySelector("#signup-email").parentElement.nextElementSibling;
         password_error_cont = document.querySelector("#signup-password").parentElement.nextElementSibling;
 
-        username_error_cont.innerText = show ? errors.username : "";
-        password_error_cont.innerText = show ? errors.password : "";
-        email_error_cont.innerText = show ? errors.email : "";
+        // username_error_cont.innerText = show ? errors.username : "";
+        // password_error_cont.innerText = show ? errors.password : "";
+        // email_error_cont.innerText = show ? errors.email : "";
+
+        username_error_cont.innerText = errors.username;
+        password_error_cont.innerText = errors.password;
+        email_error_cont.innerText = errors.email;
 
     }
 
 }
 
-function wipeInputs() {
+// function wipeInputs() {
+function resetContext() {
 
+    // Wipe Inputs
     document.querySelector("#signin-username").value = "";
     document.querySelector("#signin-password").value = "";
     document.querySelector("#signup-username").value = "";
     document.querySelector("#signup-password").value = "";
     document.querySelector("#signup-email").value = "";
+
+    // Wipe Error Messages
+    document.querySelector("#signin-username").parentElement.nextElementSibling.innerText = "";
+    document.querySelector("#signin-password").parentElement.nextElementSibling.innerText = "";
+    document.querySelector("#signup-username").parentElement.nextElementSibling.innerText = "";
+    document.querySelector("#signup-email").parentElement.nextElementSibling.innerText = "";
+    document.querySelector("#signup-password").parentElement.nextElementSibling.innerText = "";
+
 
 }
 

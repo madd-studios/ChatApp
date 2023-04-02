@@ -8,6 +8,7 @@ const { Client } = require('pg');
 
 
 // DB CONFIG
+
 let db_config = {
     host: 'localhost',
     port: 5432,

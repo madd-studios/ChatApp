@@ -7,6 +7,7 @@ let token_secret = "PbfEH9QRUP7lZxnw",
         "/signin": signin,
         "/signup": signup
     };
+let body = [];
 
 function security_router(response, request) {
 
@@ -28,23 +29,92 @@ function security_router(response, request) {
     // NEED TO BUILD ERRORS DEPENDING ON WHAT FAILED
     // ALSO, REORGANIZE YOUR CODE (ROUTING, SECURITY, ETC)
 
-    let security_routine = security_router[request.url];
+    let security_routine = security_routes[request.url];
 
-    console.log(request.body);
+    security_routine(response, request);
 
     // security_routine(request.body);
 
 }
 
-function signin(data) {
+function signin(response, request) {
 
+    let credentials,
+        signin_status;
 
+    // console.log(`request.url.host: ${request.url}`);
+    
+    request.on('error', (err) => {
+        console.error(err);
+    }).on("data", (chunk) => {
+        body.push(chunk);
+    }).on("end", async () => {
+        body = Buffer.concat(body).toString();
+        credentials = JSON.parse(body);
+
+        signin_status = await checkCredentials(credentials);
+
+        console.log(`http://${request.headers["host"]}/dashboard`);
+
+        if(signin_status.authenticate) {
+            console.log("SUCCESSFULLY AUTHENTICATED");
+            response.setHeader('Content-Type', 'text/html');
+            response.statusCode = 301;
+            response.setHeader('Location', `http://${request.headers["host"]}/dashboard`);
+            // response.writeHead(301, {Location: `http://${request.headers["host"]}/dashboard`});
+            // console.log(response.getHeaders());
+            response.end();
+        }
+        else {
+            console.log("FAILED TO AUTHENTICATE");
+            response.setHeader('Content-Type', 'application/json');
+            response.end(JSON.stringify({"message": "Failed login"}));
+        }
+
+        
+        body = [];
+    });
+    
 
 }
 
-function signup(data) {
+function signup(response, request) {
 
+    let credentials,
+        signup_status;
 
+    // console.log(`request.url.host: ${request.url}`);
+    
+    request.on('error', (err) => {
+        console.error(err);
+    }).on("data", (chunk) => {
+        body.push(chunk);
+    }).on("end", async () => {
+        body = Buffer.concat(body).toString();
+        credentials = JSON.parse(body);
+
+        signup_status = await addCredentialsToDB(credentials);
+
+        console.log(`http://${request.headers["host"]}/dashboard`);
+
+        if(signup_status.authenticate) {
+            console.log("SUCCESSFULLY AUTHENTICATED");
+            response.setHeader('Content-Type', 'text/html');
+            response.statusCode = 301;
+            response.setHeader('Location', `http://${request.headers["host"]}/dashboard`);
+            // response.writeHead(301, {Location: `http://${request.headers["host"]}/dashboard`});
+            // console.log(response.getHeaders());
+            response.end();
+        }
+        else {
+            console.log("FAILED TO AUTHENTICATE");
+            response.setHeader('Content-Type', 'application/json');
+            response.end(JSON.stringify({"message": "Failed login"}));
+        }
+
+        
+        body = [];
+    });
 
 }
 
@@ -64,9 +134,77 @@ function get_user(user) {
 
 }
 
+async function addCredentialsToDB(credentials) {
+    let authenticate = false,
+        errors = {};
+    
+    let res = await db_client.query(
+        `SELECT * FROM base.users
+         WHERE username LIKE '${credentials.username}' OR email LIKE '${credentials.username}'`
+    );
 
-exports = {
-    "security_router": security_router,
-    "token_secret": token_secret,
-    "password_salt": password_salt
+    if(res.length > 0) {
+        errors.user = "User already exists";
+    }
+    else {
+        authenticate = true;
+    }
+    // Need a way to check if user exists and if the password matches
+
+    db_client.query(
+        `INSERT INTO base.users (username, email, password, created_on) VALUES
+        ('${credentials.username}', '${credentials.email}', '${credentials.password}', NOW())`
+    );
+
+    // NEED A WAY TO CHECK IF DB FAILED
+    // SHOULD I USE A 500 SERVER HTML PAGE?
+
+    // res = await db_client.query(
+    //     `SELECT * FROM base.users
+    //      WHERE username LIKE '${credentials.username}' OR email LIKE '${credentials.username}'`
+    // );
+
+
+
+    return {
+        errors: errors,
+        authenticate: authenticate
+    }
 }
+
+async function checkCredentials(credentials) {
+
+    let authenticate = false;
+    let errors = {};
+    
+    const res = await db_client.query(
+        `SELECT * FROM base.users
+         WHERE username LIKE '${credentials.username}' OR email LIKE '${credentials.username}'`
+    );
+
+    // Need a way to check if user exists and if the password matches
+
+    if(res.length == 0) {
+        errors.user = "Could not find user...";
+    }
+    else if(res.rows[0].password != credentials.password) {
+        errors.password = "Incorrect password";
+    }
+    else {
+        authenticate = true;
+    }
+
+    return {
+        errors: errors,
+        authenticate: authenticate
+    }
+
+    // console.log(`res.rows[0]: ${res.rows[0].email}`);
+
+    
+
+}
+
+exports.security_router = security_router;
+exports.token_secret = token_secret;
+exports.password_salt = password_salt;

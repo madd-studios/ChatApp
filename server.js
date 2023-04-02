@@ -3,6 +3,7 @@ const { Server } = require("socket.io");
 const { db_client } = require('./utilities/configuration.js');
 const { token_secret, password_salt } = require('./utilities/security.js');
 const { css_routing, js_routing, image_routing } = require("./routing/resources.js");
+const { security_router } = require('./utilities/security.js');
 const { ui_router } = require("./routing/main.js");
 const fs = require('fs');
 
@@ -13,6 +14,17 @@ const fs = require('fs');
     that have routes related to a certain grouping (maybe styles, js, html). This would be a clean way
     to organize your routing.
 */
+
+/*
+    Ways to improve the router...
+
+    It feels like your coupling too many of your files. It feels like server.js 
+    is an extension of the routers instead of strictly just a server that hands off the routing to the 
+    routing js files. Maybe everything dealing with res.end should be handled by the routers.
+    This will make things so much easier to read later on I feel like. 
+
+*/
+
 
 const httpServer = createServer((req, res) => {
 
@@ -78,8 +90,7 @@ const httpServer = createServer((req, res) => {
             credentials
         */
         
-        security_router(res, req);
-        
+        security_router(res, req);           
 
     }
 
