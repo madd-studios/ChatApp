@@ -15,7 +15,7 @@ const signInButton = document.getElementsByClassName("button")[0];
 const errorMessage = document.getElementById("error-message");
 const username = document.getElementById("username");
 let prev_state = "signin";
-let notFetching = true;
+let lockPage = false;
 
 // let current_context;
 
@@ -198,10 +198,10 @@ function login(event) {
         errorDisplay(context, errors); 
     }
     // errorDisplay(context, errors, true);
-    console.log(`notFetching: ${notFetching}`);
-    console.log(`no_errors: ${no_errors}`);
 
-    if(no_errors && notFetching) {
+    if(no_errors && !lockPage) {
+
+        lockPage = true;
 
         // FETCH REQUEST HERE
         // ALSO, MAYBE ERROR DISPLAY SHOULD BE RENAMED AND SHOULD GRAB THE CREDENTIALS...
@@ -209,7 +209,6 @@ function login(event) {
 
         console.log(credentials);
 
-        notFetching = false;
         if(btn_type == "signup-btn") {
             route = '/signup';
         }
@@ -219,17 +218,32 @@ function login(event) {
         fetch(`${route}`, {
             method: 'POST',
             headers: {
-                'Accept': 'applicatin/json',
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(credentials)
         }).then((response) => {
-            window.location.replace(
-                response.url
-              );
             console.log(response);
+
+            if(response.status == 210) {
+                console.log("FAILURE LOGIN");
+                lockPage = false;
+            }
+            else {
+                window.location.replace(
+                    response.url
+                );
+            }
+
+            
+            // window.location.replace(
+            //     response.url
+            //   );
+            // console.log(response);
             // response.json().then(data => console.log(data));
             // notFetching = true;
+        }, (err) => {
+            lockPage = false;
         });
 
     }

@@ -1,8 +1,10 @@
 const { response } = require("express");
 const { db_client } = require('./configuration.js');
+const jwt  = require("jsonwebtoken");
 
 let token_secret = "PbfEH9QRUP7lZxnw",
     password_salt = "byXyPpJwrUAJ9kSf",
+    crypto_algo = "HS256",
     security_routes = {
         "/signin": signin,
         "/signup": signup
@@ -54,13 +56,14 @@ function signin(response, request) {
 
         signin_status = await checkCredentials(credentials);
 
-        console.log(`http://${request.headers["host"]}/dashboard`);
+        //console.log(`http://${request.headers["host"]}/dashboard`);
 
         if(signin_status.authenticate) {
             console.log("SUCCESSFULLY AUTHENTICATED");
             response.setHeader('Content-Type', 'text/html');
             response.statusCode = 301;
             response.setHeader('Location', `http://${request.headers["host"]}/dashboard`);
+            createCookie(response, credentials);
             // response.writeHead(301, {Location: `http://${request.headers["host"]}/dashboard`});
             // console.log(response.getHeaders());
             response.end();
@@ -68,6 +71,8 @@ function signin(response, request) {
         else {
             console.log("FAILED TO AUTHENTICATE");
             response.setHeader('Content-Type', 'application/json');
+            response.statusCode = 210;
+            //response.setHeader('Location', `http://${request.headers["host"]}/`);
             response.end(JSON.stringify({"message": "Failed login"}));
         }
 
@@ -100,6 +105,7 @@ function signup(response, request) {
         if(signup_status.authenticate) {
             console.log("SUCCESSFULLY AUTHENTICATED");
             response.setHeader('Content-Type', 'text/html');
+            createCookie(response, credentials);
             response.statusCode = 301;
             response.setHeader('Location', `http://${request.headers["host"]}/dashboard`);
             // response.writeHead(301, {Location: `http://${request.headers["host"]}/dashboard`});
@@ -115,6 +121,20 @@ function signup(response, request) {
         
         body = [];
     });
+
+}
+
+function createCookie(res, credentials) {
+
+    console.log("CREATING COOKIE");
+
+    let token = jwt.sign({"username": credentials.username, "email": credentials.email, "password": credentials.password},
+                           token_secret,
+                           {'algorithm': crypto_algo});
+
+    console.log(`Token: ${token}`);
+
+    res.setHeader('Set-Cookie', [`token=${token}`]);
 
 }
 

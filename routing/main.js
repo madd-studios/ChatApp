@@ -13,6 +13,7 @@ function ui_router(response, request) {
         return `/templates/${routes[request.url]}`;
     }
 
+    console.log("*************FAILURE HERE*******************")
     response.statusCode = 404;
     return `/templates/${routes["404"]}`;
 }
