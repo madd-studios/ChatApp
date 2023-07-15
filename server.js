@@ -3,7 +3,7 @@ const { Server } = require("socket.io");
 const { db_client } = require('./utilities/configuration.js');
 const { token_secret, password_salt } = require('./utilities/security.js');
 const { css_routing, js_routing, image_routing } = require("./routing/resources.js");
-const { security_router } = require('./utilities/security.js');
+const { security_router, check_access } = require('./utilities/security.js');
 const { ui_router } = require("./routing/main.js");
 const fs = require('fs');
 
@@ -65,7 +65,8 @@ const httpServer = createServer((req, res) => {
         }
         else {
 
-            path = ui_router(res, req);
+            check_access(req, res, ui_router);
+            //path = ui_router(res, req);
 
         }
 

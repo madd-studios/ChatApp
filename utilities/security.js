@@ -39,6 +39,10 @@ function security_router(response, request) {
 
 }
 
+// MIGHT NEED TO ADD TO THIS.
+// AT THE MOMENT YOU CAN ONLY GET EMAIL OR USERNAME FROM USER
+// SO WHEN YOU SET THE COOKIE YOU WON'T HAVE THE USERNAME OR THE EMAIL
+// YOU MAY HAVE TO GET THE USERNAME/PASSWORD FROM THE QUERY RESULTS
 function signin(response, request) {
 
     let credentials,
@@ -63,6 +67,13 @@ function signin(response, request) {
             response.setHeader('Content-Type', 'text/html');
             response.statusCode = 301;
             response.setHeader('Location', `http://${request.headers["host"]}/dashboard`);
+            
+            // Kind of sloppy but works
+            credentials.username = signin_status.username;
+            credentials.email = signin_status.email;
+
+            console.log(`signin: ${credentials.username} ${credentials.email} ${credentials.password}`);
+
             createCookie(response, credentials);
             // response.writeHead(301, {Location: `http://${request.headers["host"]}/dashboard`});
             // console.log(response.getHeaders());
@@ -82,6 +93,20 @@ function signin(response, request) {
     
 
 }
+
+
+// Need functionality here for whenever a user signs up, they get access
+// to all of the necessary views
+/*
+    I feel like your security set up in pg is trash. Why create all of these redundant records just to say that a user has access to something?
+    It's not specifically tailored like your job, instead, why not set up a simple flag saying if the user is a user or an admin and then have a cross reference
+    table that defines which types have access to views
+    ex: dashboard a
+        dashboard u
+        admin a
+        index a
+        index u
+*/
 
 function signup(response, request) {
 
@@ -127,6 +152,8 @@ function signup(response, request) {
 function createCookie(res, credentials) {
 
     console.log("CREATING COOKIE");
+
+    console.log(`createCookie credentials: ${credentials.email} ${credentials.username}`);
 
     let token = jwt.sign({"username": credentials.username, "email": credentials.email, "password": credentials.password},
                            token_secret,
@@ -214,9 +241,15 @@ async function checkCredentials(credentials) {
         authenticate = true;
     }
 
+    console.log(`res row 0: ${res.rows[0].username}`);
+    console.log(`res row 0: ${res.rows[0].email}`);
+    console.log(`res row 0: ${res.rows[0].password}`);
+
     return {
         errors: errors,
-        authenticate: authenticate
+        authenticate: authenticate,
+        username: res.rows[0].username,
+        email: res.rows[0].email
     }
 
     // console.log(`res.rows[0]: ${res.rows[0].email}`);
@@ -225,6 +258,113 @@ async function checkCredentials(credentials) {
 
 }
 
+function parseCookie(cookies) {
+
+    let cookie_map = {}
+
+    if(!cookies) {
+        return cookie_map;
+    }
+
+    
+    let cookies_arr = cookies.split(";");
+
+    for(let i = 0; i < cookies_arr.length; i++) {
+
+        let temp_cookie = cookies_arr[i].split("=");
+
+        cookie_map[temp_cookie[0]] = temp_cookie[1];
+
+        if(temp_cookie[0] == 'token') {
+            break;
+        }
+
+    }
+
+    return cookie_map;
+
+}
+
+async function check_access(req, res, func) {
+
+    /*
+        What do I need to do to check access? 
+
+        Well first off, what is coming in?
+
+        The request provides us the host, the request url, and cookies!
+
+        For now we just need to take in the cookie
+        Figure out who the user is and if they have access to the given view
+
+        If they do, then allow them to proceed, otherwise, redirect them to access denied
+
+        This should also have functionality to check if the user is on the login page then reroute them 
+        to the dashboard if they're already logged in , otherwise just check if they're going to the login and 
+        return that view for a user to login
+
+    */
+
+    // First get cookie from the request and figure out if the token is valid
+    // What should the app do if the token is invalid, I guess just access denied
+    
+    // First let's log the cookie
+
+    console.log(`Checking: ${Object.keys(req.headers)}`);
+    console.log(`Headers: ${req.headers.cookie}`);
+    console.log(`URL: ${req.url}`);
+
+    // Nice, we got the cookie, so now, remove the token= and verify it
+
+    cookies = parseCookie(req.headers.cookie);
+
+    if(!('token' in cookies)) {
+        return;
+    }
+
+    jwt.verify(cookies.token, token_secret, async function(err, decoded) {
+        if(err) {
+            console.log(`***VERIFY ERROR***: ${err}`);
+            console.log(`***VERIFY TOKEN***: ${cookies.token}`);
+            console.log(`***VERIFY TOKEN***: ${Object.keys(cookies).length}`);
+            func(res, req, '/denied');
+        }
+        else {
+            console.log(`***DECODED***: ${decoded}`);
+
+            let db_res = await db_client.query(
+                `SELECT vta.view_code, vta.access
+                FROM base.view_type_access as vta
+                INNER JOIN base.views as v
+                    ON v.view = vta.view_code
+                INNER JOIN base.users as u
+                    ON u.type = vta.access
+                WHERE (u.username = '${decoded.username}' or u.email = '${decoded.email}')
+                and v.path = '${req.url}'`
+
+            )
+
+            if(db_res.rows.length > 0) {
+                // UI ROUTER HERE
+                func(res, req);
+            }
+            else {
+                func(res, req, '/denied');
+            }
+
+        }
+    })
+    
+    // let res = await db_client.query(
+    //     `SELECT * FROM base.users
+    //      WHERE username LIKE '${credentials.username}' OR email LIKE '${credentials.username}'`
+    // );
+
+    
+
+}
+
 exports.security_router = security_router;
 exports.token_secret = token_secret;
 exports.password_salt = password_salt;
+exports.check_access = check_access;

@@ -436,3 +436,11 @@ body {
     margin-top: 24%;
 
 }
+
+.denied-message {
+
+    font-family: 'Roboto Mono', monospace;
+    font-size: 5em;
+    color: var(--darkred);
+
+}
