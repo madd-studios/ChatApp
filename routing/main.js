@@ -11,9 +11,10 @@ function ui_router(response, request, override_url = 'none') {
 
     response.setHeader('Content-Type', 'text/html');
 
+    console.log(`URL: ${request.url}`);
 
     if(override_url != 'none') {
-        return `/templates/${override_url}`;
+        return `/templates/${routes[override_url]}`;
     }
     else if(routes[request.url]) {
         return `/templates/${routes[request.url]}`;

@@ -26,7 +26,7 @@ const fs = require('fs');
 */
 
 
-const httpServer = createServer((req, res) => {
+const httpServer = createServer(async (req, res) => {
 
     console.log(req.url);
 
@@ -65,21 +65,29 @@ const httpServer = createServer((req, res) => {
         }
         else {
 
-            check_access(req, res, ui_router);
+            path = await check_access(req, res, ui_router);
+            console.log(`*****PATH*****: ${path}`);
             //path = ui_router(res, req);
 
         }
 
-        fs.readFile(root_path + path, (err, data) => {
-            if (err) {
-                console.log("IN readFile");
-                console.log(err.message);
-                res.end();
-            }
-            else {
-                res.end(data);
-            }
-        });
+        if(path != 'redirect') {
+            fs.readFile(root_path + path, (err, data) => {
+                if (err) {
+                    console.log("IN readFile");
+                    console.log(err.message);
+                    res.end();
+                }
+                else {
+                    res.end(data);
+                }
+            });
+        }
+        else {
+            res.end();
+        }
+
+        
 
     }
 

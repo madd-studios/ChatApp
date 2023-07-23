@@ -105,13 +105,14 @@ nav {
     cursor: pointer;
 }
 
-.login-dropdown-option div {
+.login-dropdown-option a {
     font-family: 'Roboto Mono', monospace;
     user-select: none;
     color: white;
     margin-left: 10em;
     font-size: 100%;
     font-size: 0.6vw;
+    text-decoration: none;
 }
 
 .login-dropdown-option:hover {

@@ -77,7 +77,7 @@ image_routing = (response, request) => {
 
     if(image_type == "svg") {
 
-        if(png_resources.indexOf(resource) > -1) {
+        if(svg_resources.indexOf(resource) > -1) {
             response.setHeader('Content-Type', 'image/svg+xml');
             return `assets/${resource}`;
         }

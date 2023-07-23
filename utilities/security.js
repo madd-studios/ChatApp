@@ -315,22 +315,58 @@ async function check_access(req, res, func) {
     console.log(`URL: ${req.url}`);
 
     // Nice, we got the cookie, so now, remove the token= and verify it
+    let ui_route;
+    let cookies = parseCookie(req.headers.cookie);
+    //let request_url = req.url;
 
-    cookies = parseCookie(req.headers.cookie);
-
-    if(!('token' in cookies)) {
-        return;
+    if(!('token' in cookies) && req.url != '/') {
+        res.writeHead(302, {'Location': `http://${req.headers.host}/`});
+        return 'redirect';
+    }
+    else if(!('token' in cookies) && req.url == '/') {
+        console.log("****************WE ARE HITTING THE RIGHT ROUTE****************");
+        ui_route = func(res, req);
+        return ui_route;
+    }
+    else if(req.url == '/logout') {
+        res.setHeader('Set-Cookie', [`token=deleted`]);
+        res.writeHead(302, {'Location': `http://${req.headers.host}/`});
+        return 'redirect';
     }
 
-    jwt.verify(cookies.token, token_secret, async function(err, decoded) {
+
+    // if(!('token' in cookies) && req.url == '/') {
+    //     ui_route = func(res, req, '/');
+    //     return ui_route;
+    // }
+
+    
+
+    await jwt.verify(cookies.token, token_secret, async function(err, decoded) {
         if(err) {
             console.log(`***VERIFY ERROR***: ${err}`);
             console.log(`***VERIFY TOKEN***: ${cookies.token}`);
             console.log(`***VERIFY TOKEN***: ${Object.keys(cookies).length}`);
-            func(res, req, '/denied');
+            // ui_route = func(res, req, '/access_denied');
+            if(req.url == '/') {
+                ui_route = func(res, req);
+                return ui_route;
+            }
+            else {
+                res.writeHead(302, {'Location': `http://${req.headers.host}/`});
+                return 'redirect';
+            }
+            
+            //return func_result;
         }
         else {
             console.log(`***DECODED***: ${decoded}`);
+
+            // Change logic here to be a redirect
+            if(req.url == '/') {
+                res.writeHead(302, {'Location': `http://${req.headers.host}/dashboard`});
+                return 'redirect';
+            }
 
             let db_res = await db_client.query(
                 `SELECT vta.view_code, vta.access
@@ -340,20 +376,26 @@ async function check_access(req, res, func) {
                 INNER JOIN base.users as u
                     ON u.type = vta.access
                 WHERE (u.username = '${decoded.username}' or u.email = '${decoded.email}')
-                and v.path = '${req.url}'`
+                and v.path = '${req.url }'`
 
             )
 
             if(db_res.rows.length > 0) {
                 // UI ROUTER HERE
-                func(res, req);
+                ui_route = func(res, req);
+                console.log(`!!!ui_route!!!: ${ui_route}`);
+                //return func_result;
             }
             else {
-                func(res, req, '/denied');
+                res.writeHead(302, {'Location': `http://${request.headers.host}/`});
+                return 'redirect';
+                //return func_result;
             }
 
         }
     })
+
+    return ui_route;
     
     // let res = await db_client.query(
     //     `SELECT * FROM base.users
