@@ -54,3 +54,20 @@ a {
   margin-right: auto;
   width: fit-content;
 }
+
+#msg-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#msg-container .special-msg {
+  font-weight: bold;
+}
+
+#msg-container p {
+  width: 100%;
+  height: fit-content;
+  background-color:#DCDCDC;
+  margin: 0px 0px 2px 0px;
+  padding: 0px 5px 0px 5px;
+}
