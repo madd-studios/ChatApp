@@ -1,0 +1,56 @@
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  width: 100%;
+  height: 100%;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.btn-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+
+#msg-container {
+  width: 60%;
+  height: 55%;
+  border: 3px solid #00B7FF;
+  border-radius: 2%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
+}
+
+#msg-draft {
+  display: flex;
+  flex-direction: row;
+  width: 60%;
+  /* height: 55%; */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#msg-draft input {
+  width: 80%;
+}
+
+#msg-draft button {
+  margin-left: 10px;
+  width: 20%;
+}
+
+.status {
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+}
