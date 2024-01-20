@@ -16,7 +16,7 @@ import { router as indexRouter }  from './routes/index.js';
 import { router as usersRouter } from './routes/users.js';
 import { fileURLToPath } from 'url';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://masteringjs.io/tutorials/node/__dirname-is-not-defined
 
@@ -38,6 +38,7 @@ app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  // This creates the error in the network tab of dev tools but doesn't show, see http-errors
   next(createError(404));
 });
 
@@ -52,10 +53,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-server.listen(3000, () => {
-  console.log("listening on port 3000");
-});
-
 const wss = new WebSocketServer({ noServer: true });
 
 wss.on('connection', function connection(ws) {
@@ -68,8 +65,26 @@ wss.on('connection', function connection(ws) {
     console.log(`Received message: ${data}`);
   });
 
-  ws.send('Connection Successful');
+  ws.send('Connection to Server Successful');
 
-})
+});
+
+server.on('upgrade', function upgrade(request, socket, head) {
+  const pathname = request.url;
+
+  if(pathname === '/chat') {
+    wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.emit('connection', ws, request);
+    })
+  }
+  else {
+    socket.destroy();
+  }
+
+});
+
+server.listen(3000, () => {
+  console.log("listening on port 3000");
+});
 
 // module.exports = app;

@@ -1,5 +1,3 @@
-import { WebSocket } from 'ws';
-
 addEventListener('load', () => {
 
     main();
@@ -8,16 +6,16 @@ addEventListener('load', () => {
 
 function main() {
 
-    const ws = new WebSocket('http://localhost:8080');
+    const ws = new WebSocket('ws://localhost:3000/chat');
 
-    ws.on('error', console.error);
+    ws.addEventListener('error', console.error);
 
-    ws.on('open', function open(data) {
+    ws.addEventListener('open', function open(data) {
         ws.send('Client connected');
     })
 
-    ws.on('message', function receive(data) {
-        console.log(`Received: ${data}`);
+    ws.addEventListener('message', function receive(data) {
+        console.log(`Received: ${data.data}`);
     });
 
 }
