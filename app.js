@@ -1,19 +1,33 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// var createError = require('http-errors');
+// var express = require('express');
+// var path = require('path');
+// var cookieParser = require('cookie-parser');
+// var logger = require('morgan');
+// var ws = require('ws');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+import createError from 'http-errors';
+import http from 'http';
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import { WebSocketServer } from 'ws';
+import morgan from 'morgan';
+import { router as indexRouter }  from './routes/index.js';
+import { router as usersRouter } from './routes/users.js';
+import { fileURLToPath } from 'url';
 
-var app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// https://masteringjs.io/tutorials/node/__dirname-is-not-defined
+
+export var app = express();
+export var server = http.createServer(app);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -38,8 +52,24 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(3000, () => {
+server.listen(3000, () => {
   console.log("listening on port 3000");
+});
+
+const wss = new WebSocketServer({ noServer: true });
+
+wss.on('connection', function connection(ws) {
+
+  ws.on('error', (err) => {
+    console.error(err);
+  });
+
+  ws.on('message', (data) => {
+    console.log(`Received message: ${data}`);
+  });
+
+  ws.send('Connection Successful');
+
 })
 
-module.exports = app;
+// module.exports = app;
