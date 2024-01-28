@@ -10,7 +10,7 @@ import http from 'http';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import morgan from 'morgan';
 import { router as indexRouter }  from './routes/index.js';
 import { router as usersRouter } from './routes/users.js';
@@ -62,10 +62,26 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.on('message', (data) => {
-    console.log(`Received message: ${data}`);
+
+    const msg = JSON.parse(data.toString());
+
+    if(msg.type === "status") {
+      console.log(msg.data);
+    }
+
+    if(msg.type === "data") {
+
+      wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(msg.data);
+        }
+      });
+      
+    }
+    
   });
 
-  ws.send('Connection to Server Successful');
+  // ws.send('Connection to Server Successful');
 
 });
 
