@@ -1,8 +1,14 @@
+// Great explanation of async js: https://www.youtube.com/watch?v=FVZ-A_Akros
+
+// Hoisting explained: https://www.youtube.com/watch?v=EvfRXyKa_GI
+
 const connection = {
     "ws": undefined,
     "connecting": false,
     "isAlive": true
 };
+
+const startingTime = Date.now();
 
 addEventListener('load', () => {
 
@@ -39,10 +45,10 @@ function click_connect(event) {
         console.error(err);
     });
 
-    connection["ws"].addEventListener('ping', () => {
-        console.log("Ping from server!");
-        connection["ws"].isAlive = true;
-    });
+    // connection["ws"].on('ping', () => {
+    //     console.log("Ping from server!");
+    //     connection["ws"].isAlive = true;
+    // });
 
     connection["ws"].addEventListener('open', function open(data) {
         add_message('Connected!', true);
@@ -52,13 +58,32 @@ function click_connect(event) {
         }));
     })
 
-    connection["ws"].addEventListener('message', function receive(data) {
+    connection["ws"].addEventListener('message', function receive(message) {
 
-        const msg = data.data;
+        const parsedMessage = JSON.parse(message.data);
+
+        console.log(parsedMessage);
+
+        const { type, data } = parsedMessage;
+
+        if(type === 'message') {
+            add_message(data);
+        }
+
+        if(type === 'ping') {
+
+            console.log(`Ping received: ${(Date.now()-startingTime)/1000}`);
+
+            this.send(JSON.stringify({
+                type: "pong",
+                data: "heartbeat"
+            }))
+        }
 
         connection["ws"].isAlive = true;
 
-        add_message(msg);
+        console.log(connection["ws"].isAlive);
+        
     });
 
     connection["connecting"] = false;
@@ -109,12 +134,19 @@ function add_message(msg, special=false) {
 // Heartbeat functionality
 const heartbeatMonitor = setInterval(() => {
 
-    if(!connection["isAlive"]) {
+    console.log(`Conn Obj: ${connection["ws"]}, Alive: ${connection["isAlive"]}`)
+
+    if(connection['ws'] && !connection["ws"]["isAlive"]) {
+        console.log()
         connection["ws"].close();
         console.error("Closing connection...");
+        console.log(`Closed at: ${(Date.now()-startingTime)/1000}`);
+        clearInterval(heartbeatMonitor);
+
+        return;
     }
 
-    connection["isAlive"] = false;
+    connection["ws"]["isAlive"] = false;
 
 }, 3000 + 1000);
 
