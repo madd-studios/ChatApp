@@ -1,6 +1,7 @@
 const connection = {
     "ws": undefined,
-    "connecting": false
+    "connecting": false,
+    "isAlive": true
 };
 
 addEventListener('load', () => {
@@ -10,8 +11,6 @@ addEventListener('load', () => {
 });
 
 function main() {
-
-    const ws = new WebSocket('ws://localhost:3000/chat');
 
     init_event_handlers();
 
@@ -40,6 +39,11 @@ function click_connect(event) {
         console.error(err);
     });
 
+    connection["ws"].addEventListener('ping', () => {
+        console.log("Ping from server!");
+        connection["ws"].isAlive = true;
+    });
+
     connection["ws"].addEventListener('open', function open(data) {
         add_message('Connected!', true);
         connection["ws"].send(JSON.stringify({
@@ -50,7 +54,9 @@ function click_connect(event) {
 
     connection["ws"].addEventListener('message', function receive(data) {
 
-        const msg = data.data
+        const msg = data.data;
+
+        connection["ws"].isAlive = true;
 
         add_message(msg);
     });
@@ -76,6 +82,8 @@ function click_send() {
     }
     const serialized_msg = JSON.stringify(msg);
 
+    msg_box.value = '';
+
     connection["ws"].send(serialized_msg);
 
     // add_message(msg);
@@ -97,4 +105,16 @@ function add_message(msg, special=false) {
     msg_container.appendChild(msg_element);
 
 }
+
+// Heartbeat functionality
+const heartbeatMonitor = setInterval(() => {
+
+    if(!connection["isAlive"]) {
+        connection["ws"].close();
+        console.error("Closing connection...");
+    }
+
+    connection["isAlive"] = false;
+
+}, 3000 + 1000);
 

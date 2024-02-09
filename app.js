@@ -55,13 +55,51 @@ app.use(function(err, req, res, next) {
 
 const wss = new WebSocketServer({ noServer: true });
 
+// Heartbeat Functionality 
+// If a websocket connection fails, the client needs to switch to long-polling
+
+function heartbeat() {
+  console.log("Response received from client!");
+  this.isAlive = true;
+}
+
+const heartbeatMonitor = setInterval(() => {
+
+  wss.clients.forEach((ws) => {
+
+    if(!ws.isAlive) {
+      ws.terminate();
+      console.error("Closing down client...");
+    } 
+
+    ws.isAlive = false;
+    console.log("Pinging client...");
+    ws.ping();
+
+  }, 3000);
+
+});
+
+wss.on('close', function close() {
+  clearInterval(heartbeatMonitor);
+});
+
+
 wss.on('connection', function connection(ws) {
+
+  ws.isAlive = true;
 
   ws.on('error', (err) => {
     console.error(err);
   });
 
+  ws.on('pong', heartbeat);
+
   ws.on('message', (data) => {
+
+    const bound_heartbeat = heartbeat.bind(ws);
+
+    bound_heartbeat();
 
     const msg = JSON.parse(data.toString());
 
