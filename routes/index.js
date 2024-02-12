@@ -5,6 +5,7 @@ import { __dirname } from '../app.js';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  console.log("HITTING INDEX");
   console.log(__dirname);
   let resolved_path = path.resolve(__dirname, 'views', 'index.html');
   res.sendFile(resolved_path);

@@ -64,6 +64,11 @@ a {
   font-weight: bold;
 }
 
+#msg-container .error-msg {
+  font-weight: bold;
+  color: red;
+}
+
 #msg-container p {
   width: 100%;
   height: fit-content;

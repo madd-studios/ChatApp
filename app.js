@@ -14,7 +14,13 @@ import { WebSocketServer, WebSocket } from 'ws';
 import morgan from 'morgan';
 import { router as indexRouter }  from './routes/index.js';
 import { router as usersRouter } from './routes/users.js';
+import { router as chatRouter } from './routes/chat.js';
 import { fileURLToPath } from 'url';
+
+// Set up a globally accessible list of long polling subscribers so chat.js can access the information...
+// global.subscribers = Object.create(null);
+global.subscribers = new Array();
+global.wss = null;
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -35,6 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/lp_chat', chatRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -53,7 +60,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const wss = new WebSocketServer({ noServer: true });
+global.wss = new WebSocketServer({ noServer: true });
 
 // Heartbeat Functionality 
 // If a websocket connection fails, the client needs to switch to long-polling
@@ -65,42 +72,48 @@ function heartbeat() {
 
 const heartbeatMonitor = setInterval(() => {
 
-  console.log("HEARTBEAT ACTIVE");
+  // console.log("HEARTBEAT ACTIVE");
 
-  wss.clients.forEach((ws) => {
+  try {
+    global.wss.clients.forEach((ws) => {
 
-    if(!ws.isAlive) {
-      ws.terminate();
-      console.error("Closing down client...");
-    } 
-
-    ws.isAlive = false;
-    console.log("Pinging client...");
-    
-    //ws.ping();
-
-    // This is frustrating but the WebSocket API doesn't have
-    // an event listener for ping events
-    // You'll just have to use a message with some metadata
-    // attached to it to help differentiate between regular messages
-    // and ping messages
-
-    ws.send(JSON.stringify({
-      type: "ping",
-      data: "heartbeat"
-    }));
-
-  });
+      if(!ws.isAlive) {
+        ws.terminate();
+        console.error("Closing down client...");
+      } 
+  
+      ws.isAlive = false;
+      console.log("Pinging client...");
+      
+      //ws.ping();
+  
+      // This is frustrating but the WebSocket API doesn't have
+      // an event listener for ping events
+      // You'll just have to use a message with some metadata
+      // attached to it to help differentiate between regular messages
+      // and ping messages
+  
+      ws.send(JSON.stringify({
+        type: "ping",
+        data: "heartbeat"
+      }));
+  
+    });
+  }
+  catch(err) {
+    console.error("ERROR when sending websocket messages from chat")
+  }
+  
 
 }, 3000);
 
-wss.on('close', function close() {
+global.wss.on('close', function close() {
   console.log("Closing websocket server");
   clearInterval(heartbeatMonitor);
 });
 
 
-wss.on('connection', function connection(ws) {
+global.wss.on('connection', function connection(ws) {
 
   ws.isAlive = true;
 
@@ -126,7 +139,7 @@ wss.on('connection', function connection(ws) {
 
       bound_heartbeat();
 
-      wss.clients.forEach(function each(client) {
+      global.wss.clients.forEach(function each(client) {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({
             type: "message",
@@ -134,6 +147,14 @@ wss.on('connection', function connection(ws) {
           }));
         }
       });
+
+      // Send message back to longpoll subscribers.
+      global.subscribers.forEach(function each(connection) {
+        connection.res.send(JSON.stringify({
+          type: "message",
+          data: msg.data
+        }));
+      })
       
     }
 
@@ -153,8 +174,8 @@ server.on('upgrade', function upgrade(request, socket, head) {
   const pathname = request.url;
 
   if(pathname === '/chat') {
-    wss.handleUpgrade(request, socket, head, function done(ws) {
-      wss.emit('connection', ws, request);
+    global.wss.handleUpgrade(request, socket, head, function done(ws) {
+      global.wss.emit('connection', ws, request);
     })
   }
   else {

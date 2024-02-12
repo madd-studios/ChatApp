@@ -4,8 +4,16 @@
 
 const connection = {
     "ws": undefined,
+    "ws_url": "ws://localhost:3000/chat",
+    "lp_url": "http://localhost:3000/lp_chat",
     "connecting": false,
-    "isAlive": true
+    "isAlive": true,
+    "type": "lp",
+    "attempts": 0,
+    "stopAttempting": false//,
+    //"lp_sending": false
+    // It might be worth considering disabling a button 
+    // if a user sends using longpolling or websocket.
 };
 
 const startingTime = Date.now();
@@ -34,34 +42,92 @@ function init_event_handlers() {
 
 }
 
-function click_connect(event) {
+function websocket_connect(url) {
 
-    connection["connecting"] = true;
+    console.log(url);
 
-    connection["ws"] = new WebSocket('ws://localhost:3000/chat');
+    connection["ws"] = new WebSocket(url);
 
-    connection["ws"].addEventListener('error', function(err) {
-        console.log("Failed to connect to websocket...");
-        console.error(err);
-    });
+    connection["ws"].addEventListener('error', function() {
+		console.log(`Failed Attempt ${connection["attempts"]+1}`);
+		if(connection["attempts"]+1 < 3) {
+            connection["attempts"]++;
+			websocket_connect(connection["ws_url"]);
+		}
+        else {
+            connection["ws"].close();
+            connection["stopAttempting"] = true;
+        }
+	});
+	connection["ws"].addEventListener('close', function(event) {
+		if(event.code === 3001) {
+            // Closed by disconnect button
+            console.log('Manual disconnection...');
+        }
+        if(connection["stopAttempting"]) {
+            // Fallback to longpolling
+            longpoll_connect(connection["lp_url"]);
+        }
+	})
 
-    // connection["ws"].on('ping', () => {
-    //     console.log("Ping from server!");
-    //     connection["ws"].isAlive = true;
-    // });
-
-    connection["ws"].addEventListener('open', function open(data) {
-        add_message('Connected!', true);
+    connection["ws"].addEventListener('open', () => {
+        connection["type"] = "ws"
+        connection["connecting"] = false;
+        add_message('Connected!', "special");
         connection["ws"].send(JSON.stringify({
             type: "status",
             data: "Connected to server"
         }));
-    })
+    
+        connection["ws"].addEventListener('message', function receive(message) {
+    
+            const parsedMessage = JSON.parse(message.data);
+    
+            console.log(parsedMessage);
+    
+            const { type, data } = parsedMessage;
+    
+            if(type === 'message') {
+                add_message(data);
+            }
+    
+            if(type === 'ping') {
+    
+                console.log(`Ping received: ${(Date.now()-startingTime)/1000}`);
+    
+                this.send(JSON.stringify({
+                    type: "pong",
+                    data: "heartbeat"
+                }))
+            }
+    
+            connection["ws"].isAlive = true;
+    
+            console.log(connection["ws"].isAlive);
+            
+        });
 
-    connection["ws"].addEventListener('message', function receive(message) {
+        setInterval(heartbeatMonitor, 3000 + 1000);
 
+    });
+}
+
+// async function longpoll_fetch() {
+
+//     const response = await fetch(connection["lp_url"]);
+
+//     return response.json();
+
+// }
+
+function longpoll_connect(url) {
+
+    // Consider connecting flag 
+    
+    fetch(connection["lp_url"]).then((response) => {
+        
         const parsedMessage = JSON.parse(message.data);
-
+    
         console.log(parsedMessage);
 
         const { type, data } = parsedMessage;
@@ -70,30 +136,41 @@ function click_connect(event) {
             add_message(data);
         }
 
-        if(type === 'ping') {
+        longpoll_connect(url);
 
-            console.log(`Ping received: ${(Date.now()-startingTime)/1000}`);
-
-            this.send(JSON.stringify({
-                type: "pong",
-                data: "heartbeat"
-            }))
-        }
-
-        connection["ws"].isAlive = true;
-
-        console.log(connection["ws"].isAlive);
-        
+    }).catch((error) => {
+        // Add message here that says all forms of connecting failed, server must be down
+        add_message("ALL CONNECTIONS FAILED, SERVER MUST BE DOWN...", "error");
     });
 
-    connection["connecting"] = false;
+}
+
+function click_connect(event) {
+
+    // So this flag may not be reuseful because of the nature of long polling 
+    // Long polling will have to reconnect for each message
+    connection["connecting"] = true;
+
+    if(connection["type"] === "ws") {
+        websocket_connect(connection["ws_url"]);
+    }
+
+    // Use ws_connection to determine if a web socket connection should be used or a long polling connection
+    if(connection["type"] === "lp") {
+
+         // Use Fetch API
+         longpoll_connect(connection["lp_url"]);
+        
+    }
+
+    
 }
 
 function click_disconnect(event) {
 
     if(connection["ws"] && connection["connecting"] === false) {
 
-        connection["ws"].close();
+        connection["ws"].close(3001);
 
     }
 
@@ -109,7 +186,23 @@ function click_send() {
 
     msg_box.value = '';
 
-    connection["ws"].send(serialized_msg);
+    if(connection["type"] === "ws") {
+        connection["ws"].send(serialized_msg);
+    }
+    
+    if(connection["type"] === "lp") {
+        // Do a fetch post here
+        if(!connection["lp_sending"]) {
+            fetch(connection["lp_url"], {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(msg)
+            })
+        }
+    }
+    
 
     // add_message(msg);
     // Do we wan this to add the message or the web socket message listener?
@@ -117,13 +210,23 @@ function click_send() {
 
 // DOM functions
 
-function add_message(msg, special=false) {
+function add_message(msg, type="message") {
     
     const msg_container = document.getElementById("msg-container");
 
     const msg_element = document.createElement("p");
 
-    special ? msg_element.className="special-msg" : '';
+    // special ? msg_element.className="special-msg" : '';
+
+    if(type === "message") {
+        msg_element.className = '';
+    }
+    if(type === "special") {
+        msg_element.className = "special-msg";
+    }
+    if(type === "error") {
+        msg_element.className = "error-msg";
+    }
 
     msg_element.innerText = msg;
 
@@ -131,8 +234,7 @@ function add_message(msg, special=false) {
 
 }
 
-// Heartbeat functionality
-const heartbeatMonitor = setInterval(() => {
+function heartbeatMonitor() {
 
     console.log(`Conn Obj: ${connection["ws"]}, Alive: ${connection["isAlive"]}`)
 
@@ -148,5 +250,8 @@ const heartbeatMonitor = setInterval(() => {
 
     connection["ws"]["isAlive"] = false;
 
-}, 3000 + 1000);
+}
+
+
+
 
