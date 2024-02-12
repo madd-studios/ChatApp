@@ -124,9 +124,11 @@ function longpoll_connect(url) {
 
     // Consider connecting flag 
     
-    fetch(connection["lp_url"]).then((response) => {
+    fetch(connection["lp_url"]).then(async (response) => {
         
-        const parsedMessage = JSON.parse(message.data);
+        const message = await response.text();
+
+        const parsedMessage = JSON.parse(message);
     
         console.log(parsedMessage);
 
@@ -140,6 +142,7 @@ function longpoll_connect(url) {
 
     }).catch((error) => {
         // Add message here that says all forms of connecting failed, server must be down
+        console.error(error);
         add_message("ALL CONNECTIONS FAILED, SERVER MUST BE DOWN...", "error");
     });
 
@@ -192,7 +195,7 @@ function click_send() {
     
     if(connection["type"] === "lp") {
         // Do a fetch post here
-        if(!connection["lp_sending"]) {
+        //if(!connection["lp_sending"]) {
             fetch(connection["lp_url"], {
                 method: "POST",
                 headers: {
@@ -200,7 +203,7 @@ function click_send() {
                 },
                 body: JSON.stringify(msg)
             })
-        }
+        //}
     }
     
 

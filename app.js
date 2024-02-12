@@ -150,7 +150,7 @@ global.wss.on('connection', function connection(ws) {
 
       // Send message back to longpoll subscribers.
       Object.keys(global.subscribers).forEach(function each(id) {
-        global.subscribers[i].send(JSON.stringify({
+        global.subscribers[id].end(JSON.stringify({
             type: "message",
             data: msg.data
         }));

@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
         delete subscribers[id];
     });
 
-    global.subscribers.push({req, res});
+    // global.subscribers.push({req, res});
 
 });
 
@@ -34,15 +34,13 @@ router.post('/', function (req, res, next) {
 
     const msg = req.body;
 
-    global.subscribers.push({req, res});
-
     // Loop through all of the long polling subscribers
 
     if(msg.type === "data") {
 
         try {
             Object.keys(global.subscribers).forEach(function each(id) {
-                global.subscribers[i].send(JSON.stringify({
+                global.subscribers[id].end(JSON.stringify({
                     type: "message",
                     data: msg.data
                 }));
