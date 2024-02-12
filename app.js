@@ -19,7 +19,7 @@ import { fileURLToPath } from 'url';
 
 // Set up a globally accessible list of long polling subscribers so chat.js can access the information...
 // global.subscribers = Object.create(null);
-global.subscribers = new Array();
+global.subscribers = new Object(null);
 global.wss = null;
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -149,12 +149,12 @@ global.wss.on('connection', function connection(ws) {
       });
 
       // Send message back to longpoll subscribers.
-      global.subscribers.forEach(function each(connection) {
-        connection.res.send(JSON.stringify({
-          type: "message",
-          data: msg.data
+      Object.keys(global.subscribers).forEach(function each(id) {
+        global.subscribers[i].send(JSON.stringify({
+            type: "message",
+            data: msg.data
         }));
-      })
+      });
       
     }
 

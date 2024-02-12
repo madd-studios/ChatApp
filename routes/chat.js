@@ -7,6 +7,23 @@ import { __dirname } from '../app.js';
 router.get('/', function(req, res, next) {
 
     // We can always access the subscribers from global.subscribers
+
+    let id;
+
+    do {
+        id = Math.random();
+    }while (id in Object.keys(global.subscribers));
+
+    res.setHeader('Content-Type', 'application/json');
+    // What exactly is this cache header doing?
+    res.setHeader("Cache-Control", "no-cache, must-revalidate");
+
+    global.subscribers[id] = res;
+
+    req.on('close', () => {
+        delete subscribers[id];
+    });
+
     global.subscribers.push({req, res});
 
 });
@@ -24,8 +41,8 @@ router.post('/', function (req, res, next) {
     if(msg.type === "data") {
 
         try {
-            global.subscribers.forEach(function each(client) {
-                res.send(JSON.stringify({
+            Object.keys(global.subscribers).forEach(function each(id) {
+                global.subscribers[i].send(JSON.stringify({
                     type: "message",
                     data: msg.data
                 }));
@@ -34,8 +51,7 @@ router.post('/', function (req, res, next) {
             console.error(`Line 34: ${err.toString()}`);
             console.error("ERROR when sending longpolling messages from chat");
         }
-        
-    
+
         // Loop through all of the websocket connections
     
         try{
