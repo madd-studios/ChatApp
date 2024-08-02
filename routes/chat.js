@@ -34,6 +34,8 @@ router.post('/', function (req, res, next) {
 
     const msg = req.body;
 
+    console.log(`REQUEST BODY CHAT POST: ${req.body}`);
+
     // Loop through all of the long polling subscribers
 
     if(msg.type === "data") {

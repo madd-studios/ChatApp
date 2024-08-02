@@ -1,0 +1,107 @@
+html {
+    width: 100%;
+    height: 100%;
+  }
+  
+  body {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: lightgray;
+    font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  }
+  
+  a {
+    color: #00B7FF;
+  }
+  
+  .form-body {
+    width: 20%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .form-body-modal {
+    width: 50%;
+    /* height: 50%; */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* .form-floating {
+    position: relative;
+  } */
+  
+  /* input {
+    display: block;
+    box-sizing: border-box;
+  } */
+  
+  .form-body .form-floating:focus-within {
+    z-index: 2;
+  }
+  
+  .input-container {
+    box-sizing: border-box;
+  }
+  
+  .username input{
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    /* margin-bottom: 1px; */
+  }
+  
+  .password input{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  
+  #sign-in {
+    /* display: block; */
+    width: 100%;
+  }
+
+  #create-account {
+    margin-top: 0px !important;
+    width: 100%;
+  }
+
+  #sign-up {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  a {
+    display: block;
+    margin-top: 1rem;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    color: #00008B;
+    text-decoration: none;
+  }
+  
+  .sign-in-logo {
+    margin-right: auto;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .sign-in-logo-container {
+    width: 30%;
+    height: 30%;
+  }
+
+  .modal-header .modal-title {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  

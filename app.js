@@ -5,6 +5,7 @@
 // var logger = require('morgan');
 // var ws = require('ws');
 
+import 'dotenv/config';
 import createError from 'http-errors';
 import http from 'http';
 import express from 'express';
@@ -15,6 +16,8 @@ import morgan from 'morgan';
 import { router as indexRouter }  from './routes/index.js';
 import { router as usersRouter } from './routes/users.js';
 import { router as chatRouter } from './routes/chat.js';
+import { router as signinRouter} from './routes/signin.js';
+import { db_client, db_startup } from './middleware/db.js';
 import { fileURLToPath } from 'url';
 
 // Set up a globally accessible list of long polling subscribers so chat.js can access the information...
@@ -33,13 +36,14 @@ export var server = http.createServer(app);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/signin', signinRouter);
 app.use('/users', usersRouter);
 app.use('/lp_chat', chatRouter);
 
@@ -184,7 +188,9 @@ server.on('upgrade', function upgrade(request, socket, head) {
 
 });
 
-server.listen(3000, () => {
+server.listen(3000, async () => {
+  console.log(`PROCESS ENV: ${process.env.MONGO_URI}`);
+  db_startup();
   console.log("listening on port 3000");
 });
 
